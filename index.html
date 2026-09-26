@@ -954,3 +954,64 @@ function initGame() {
 
     document.getElementById("gameStatus")
         .innerText = "Part
+
+
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// Configuración de tu proyecto 'gran-bingo-night'
+const firebaseConfig = {
+  databaseURL: "https://gran-bingo-night-default-rtdb.firebaseio.com"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// 1. Crear Sala (Administrador)
+export async function crearSala() {
+  const codigo = Math.random().toString(36).substring(2, 7).toUpperCase(); // Código de 5 letras
+  await set(ref(db, `rooms/${codigo}`), {
+    estado: "esperando",
+    numeroActual: 0,
+    historial: [0], // Historial inicializado
+    jugadores: {}
+  });
+  return codigo; 
+}
+
+// 2. Unirse a la Sala (Jugadores)
+export async function unirseASala(codigo, nombre, jugadorId) {
+  await set(ref(db, `rooms/${codigo}/jugadores/${jugadorId}`), { nombre });
+}
+
+// 3. Iniciar el Bingo
+export async function iniciarJuego(codigo) {
+  await update(ref(db, `rooms/${codigo}`), { estado: "jugando" });
+}
+
+// 4. Escuchar cambios en tiempo real (Para todos los teléfonos)
+export function escucharSala(codigo, callback) {
+  onValue(ref(db, `rooms/${codigo}`), (snapshot) => {
+    if (snapshot.exists()) {
+      callback(snapshot.val()); // Retorna estado, numeroActual e historial
+    }
+  });
+}
+
+// 5. Bombo Digital del 1 al 75 sin repetir (Administrador)
+export async function siguienteNumero(codigo, historialActual) {
+  const disponibles = Array.from({ length: 75 }, (_, i) => i + 1)
+    .filter(n => !historialActual.includes(n));
+
+  if (disponibles.length === 0) return null; // Fin del juego
+
+  const nuevoNumero = disponibles[Math.floor(Math.random() * disponibles.length)];
+  const nuevoHistorial = [...historialActual, nuevoNumero];
+
+  await update(ref(db, `rooms/${codigo}`), {
+    numeroActual: nuevoNumero,
+    historial: nuevoHistorial
+  });
+  return nuevoNumero;
+}
+
