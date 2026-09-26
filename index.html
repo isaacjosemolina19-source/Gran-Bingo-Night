@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gran Bingo Night</title>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #fdcb6e;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --danger: #d63031;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, var(--primary), #a29bfe);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
+
+        .panel {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-success { background-color: var(--success); }
+        .btn-danger { background-color: var(--danger); }
+
+        /* Panel de control y número actual */
+        .ball-display {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #fff, var(--secondary));
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--dark);
+            border: 4px solid var(--dark);
+        }
+
+        /* Historial de números */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .history-ball {
+            aspect-ratio: 1;
+            background-color: #dfe6e9;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #b2bec3;
+        }
+
+        .history-ball.drawn {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Cartón de Bingo */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .bingo-card {
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 3px solid var(--primary);
+            max-width: 450px;
+            width: 100%;
+        }
+
+        .bingo-header {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .bingo-cell {
+            aspect-ratio: 1;
+            background-color: #f1f2f6;
+            border: 2px solid #ced6e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .bingo-cell:hover {
+            background-color: #e4e7eb;
+        }
+
+        .bingo-cell.marked {
+            background-color: var(--success);
+            color: white;
+            border-color: #2ed573;
+            transform: scale(0.95);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .bingo-cell.free-space {
+            background-color: var(--secondary);
+            color: var(--dark);
+            font-size: 0.8rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🎉 Gran Bingo Night 🎉</h1>
+    </header>
+
+    <div class="container">
+        
+        <!-- PANEL DEL ANFITRIÓN (BOMBO) -->
+        <div class="panel">
+            <h2>Bombo Digital</h2>
+            <div class="ball-display" id="currentBall">-</div>
+            <button class="btn" id="btnDraw" onclick="drawNumber()">Sacar Número</button>
+            <button class="btn btn-danger" onclick="resetGame()">Reiniciar Juego</button>
+            
+            <h3 style="margin-top: 30px; align-self: flex-start;">Panel de Control (1-75):</h3>
+            <div class="history-grid" id="historyGrid"></div>
+        </div>
+
+        <!-- PANEL DEL JUGADOR (CARTÓN) -->
+        <div class="panel card-container">
+            <h2>Tu Cartón Virtual</h2>
+            <button class="btn btn-success" style="width: auto;" onclick="generateNewCard()">Generar Nuevo Cartón</button>
+            
+            <div class="bingo-card">
+                <div class="bingo-header">
+                    <div>B</div><div>I</div><div>N</div><div>G</div><div>O</div>
+                </div>
+                <div class="bingo-grid" id="bingoGrid">
+                    <!-- Las celdas se generarán con JS -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Lógica del Bombo (1 al 75)
+        let pool = [];
+        let drawnNumbers = new Set();
+
+        function initPool() {
+            pool = Array.from({length: 75}, (_, i) => i + 1);
+            drawnNumbers.clear();
+            document.getElementById('currentBall').innerText = '-';
+            createHistoryGrid();
+        }
+
+        function createHistoryGrid() {
+            const grid = document.getElementById('historyGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 75; i++) {
+                const ball = document.createElement('div');
+                ball.classList.add('history-ball');
+                ball.id = `hist-${i}`;
+                ball.innerText = i;
+                grid.appendChild(ball);
+            }
+        }
+
+        function drawNumber() {
+            if (pool.length === 0) {
+                alert('¡Ya se han sacado todos los números!');
+                return;
+            }
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            const num = pool.splice(randomIndex, 1)[0];
+            drawnNumbers.add(num);
+
+            // Mostrar número actual
+            let letter = '';
+            if (num <= 15) letter = 'B';
+            else if (num <= 30) letter = 'I';
+            else if (num <= 45) letter = 'N';
+            else if (num <= 60) letter = 'G';
+            else letter = 'O';
+
+            document.getElementById('currentBall').innerText = `${letter}${num}`;
+            
+            // Marcar en el historial
+            document.getElementById(`hist-${num}`).classList.add('drawn');
+        }
+
+        function resetGame() {
+            if (confirm('¿Seguro que deseas reiniciar el sorteo?')) {
+                initPool();
+            }
+        }
+
+        // Lógica del Cartón de Bingo (Estilo Americano tradicional)
+        // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
+        function getRandomColumnNumbers(min, max, count) {
+            const numbers = [];
+            while (numbers.length < count) {
+                const num = Math.floor(Math.random() * (max - min + 1)) + min;
+                if (!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            return numbers.sort((a, b) => a - b);
+        }
+
+        function generateNewCard() {
+            const grid = document.getElementById('bingoGrid');
+            grid.innerHTML = '';
+
+            const cols = [
+                getRandomColumnNumbers(1, 15, 5),
+                getRandomColumnNumbers(16, 30, 5),
+                getRandomColumnNumbers(31, 45, 5),
+                getRandomColumnNumbers(46, 60, 5),
+                getRandomColumnNumbers(61, 75, 5)
+            ];
+
+            // Reorganizar de columnas a filas para construir la cuadrícula HTML
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 5; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('bingo-cell');
+
+                    // Espacio libre central (Fila 2, Columna 2 indexada en 0)
+                    if (row === 2 && col === 2) {
+                        cell.classList.add('free-space', 'marked');
+                        cell.innerText = 'LIBRE';
