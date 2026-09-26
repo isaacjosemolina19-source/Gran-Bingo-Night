@@ -1,326 +1,956 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gran Bingo Night</title>
-    <style>
-        :root {
-            --primary: #6c5ce7;
-            --secondary: #fdcb6e;
-            --dark: #2d3436;
-            --light: #f5f6fa;
-            --success: #00b894;
-            --danger: #d63031;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17132f">
+<title>Gran Bingo Night</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light);
-            color: var(--dark);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+<style>
+    :root {
+        --bg: #0d0a1f;
+        --panel: #17132f;
+        --panel-2: #211b42;
+        --primary: #7c5cff;
+        --primary-light: #a992ff;
+        --gold: #ffd166;
+        --green: #21d19f;
+        --red: #ff5c70;
+        --white: #ffffff;
+        --muted: #aaa4c5;
+        --line: rgba(255,255,255,.10);
+        --shadow: 0 15px 40px rgba(0,0,0,.30);
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, var(--primary), #a29bfe);
-            color: white;
-            padding: 20px 40px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+    * {
+        box-sizing: border-box;
+    }
 
-        h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+    body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+            radial-gradient(circle at top, #30205e 0%, var(--bg) 45%);
+        color: var(--white);
+    }
 
-        .container {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            max-width: 1200px;
-            width: 100%;
-        }
+    button,
+    input {
+        font: inherit;
+    }
 
-        @media (min-width: 768px) {
-            .container {
-                grid-template-columns: 1fr 2fr;
-            }
+    .app {
+        width: 100%;
+        max-width: 1200px;
+        margin: auto;
+        padding: 18px;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    header {
+        text-align: center;
+        padding: 18px 10px 25px;
+    }
+
+    .logo {
+        font-size: clamp(2rem, 7vw, 4rem);
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin: 0;
+        background: linear-gradient(90deg, #fff, var(--gold), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+        color: var(--muted);
+        margin-top: 8px;
+    }
+
+    /* =========================
+       SCREENS
+    ========================= */
+
+    .screen {
+        display: none;
+    }
+
+    .screen.active {
+        display: block;
+    }
+
+    /* =========================
+       CARDS
+    ========================= */
+
+    .panel {
+        background: rgba(23,19,47,.94);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+    }
+
+    .home-card {
+        max-width: 520px;
+        margin: 25px auto;
+        text-align: center;
+    }
+
+    h2 {
+        margin-top: 0;
+    }
+
+    .description {
+        color: var(--muted);
+        line-height: 1.6;
+    }
+
+    /* =========================
+       BUTTONS
+    ========================= */
+
+    .btn {
+        width: 100%;
+        border: 0;
+        border-radius: 13px;
+        padding: 15px 18px;
+        margin-top: 12px;
+        cursor: pointer;
+        color: white;
+        font-weight: 800;
+        font-size: 1rem;
+        transition: transform .15s, opacity .15s;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        opacity: .94;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary), #5940db);
+    }
+
+    .btn-gold {
+        background: linear-gradient(135deg, #ffd166, #f5a623);
+        color: #211800;
+    }
+
+    .btn-green {
+        background: linear-gradient(135deg, #21d19f, #0da879);
+    }
+
+    .btn-red {
+        background: linear-gradient(135deg, #ff5c70, #d9364e);
+    }
+
+    .btn-secondary {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+    }
+
+    /* =========================
+       FORMULARIOS
+    ========================= */
+
+    .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--muted);
+        font-weight: 700;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #0f0c22;
+        color: white;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: var(--primary-light);
+    }
+
+    /* =========================
+       SALA
+    ========================= */
+
+    .room-code {
+        text-align: center;
+        margin: 20px 0;
+        padding: 20px;
+        border-radius: 18px;
+        background: var(--panel-2);
+    }
+
+    .room-code small {
+        color: var(--muted);
+    }
+
+    .room-code strong {
+        display: block;
+        font-size: 2.4rem;
+        letter-spacing: 8px;
+        color: var(--gold);
+        margin-top: 8px;
+    }
+
+    .players {
+        display: grid;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .player {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #100d24;
+        padding: 12px 15px;
+        border-radius: 12px;
+    }
+
+    .host-badge {
+        color: var(--gold);
+        font-size: .8rem;
+        font-weight: 800;
+    }
+
+    /* =========================
+       JUEGO
+    ========================= */
+
+    .game-layout {
+        display: grid;
+        gap: 20px;
+    }
+
+    @media (min-width: 850px) {
+        .game-layout {
+            grid-template-columns: 340px 1fr;
+            align-items: start;
+        }
+    }
+
+    .game-topbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+    }
+
+    .room-pill {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        padding: 10px 14px;
+        border-radius: 999px;
+        color: var(--muted);
+    }
+
+    /* =========================
+       BOMBO
+    ========================= */
+
+    .ball-display {
+        width: 180px;
+        height: 180px;
+        margin: 20px auto;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background:
+            radial-gradient(circle at 30% 25%, #fff 0%, #fff4b0 8%, var(--gold) 35%, #d99000 100%);
+
+        color: #211800;
+        border: 7px solid #fff;
+        box-shadow:
+            0 0 0 8px rgba(255,209,102,.15),
+            0 18px 40px rgba(0,0,0,.4);
+
+        font-size: 3.2rem;
+        font-weight: 900;
+    }
+
+    .current-label {
+        text-align: center;
+        color: var(--muted);
+    }
+
+    /* =========================
+       HISTORIAL
+    ========================= */
+
+    .history-grid {
+        display: grid;
+        grid-template-columns: repeat(10, 1fr);
+        gap: 5px;
+        margin-top: 15px;
+    }
+
+    .history-ball {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #0d0a1d;
+        border: 1px solid var(--line);
+        color: #706b88;
+        font-size: .75rem;
+        font-weight: 800;
+    }
+
+    .history-ball.drawn {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary-light);
+    }
+
+    /* =========================
+       CARTÓN
+    ========================= */
+
+    .bingo-card {
+        background: #f8f7ff;
+        color: #17132f;
+        padding: 12px;
+        border-radius: 18px;
+        max-width: 620px;
+        margin: auto;
+        box-shadow: 0 20px 50px rgba(0,0,0,.3);
+    }
+
+    .bingo-header,
+    .bingo-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 6px;
+    }
+
+    .bingo-header {
+        margin-bottom: 6px;
+    }
+
+    .bingo-header div {
+        text-align: center;
+        font-size: clamp(1.4rem, 5vw, 2.2rem);
+        font-weight: 900;
+        color: var(--primary);
+    }
+
+    .bingo-cell {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        background: #e8e5f5;
+        border: 2px solid #d2cee5;
+        font-size: clamp(.9rem, 3.5vw, 1.4rem);
+        font-weight: 900;
+        cursor: pointer;
+        user-select: none;
+        transition: .15s;
+    }
+
+    .bingo-cell:hover {
+        transform: scale(.97);
+    }
+
+    .bingo-cell.marked {
+        background: var(--green);
+        border-color: #0b9c76;
+        color: white;
+    }
+
+    .bingo-cell.free {
+        background: var(--gold);
+        color: #211800;
+        font-size: .75rem;
+    }
+
+    /* =========================
+       ESTADO
+    ========================= */
+
+    .status {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        background: rgba(33,209,159,.1);
+        color: var(--green);
+        font-weight: 700;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    .footer {
+        text-align: center;
+        padding: 30px 0 10px;
+        color: #69647d;
+        font-size: .8rem;
+    }
+
+    @media (max-width: 500px) {
+        .app {
+            padding: 10px;
         }
 
         .panel {
-            background: white;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 16px;
+            border-radius: 18px;
         }
 
-        .btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin: 10px 0;
-            width: 100%;
-        }
-
-        .btn:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-
-        .btn-success { background-color: var(--success); }
-        .btn-danger { background-color: var(--danger); }
-
-        /* Panel de control y número actual */
         .ball-display {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff, var(--secondary));
-            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            font-weight: bold;
-            margin: 20px 0;
-            color: var(--dark);
-            border: 4px solid var(--dark);
+            width: 145px;
+            height: 145px;
+            font-size: 2.5rem;
         }
 
-        /* Historial de números */
         .history-grid {
-            display: grid;
             grid-template-columns: repeat(10, 1fr);
-            gap: 5px;
-            margin-top: 15px;
-            width: 100%;
         }
 
         .history-ball {
-            aspect-ratio: 1;
-            background-color: #dfe6e9;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
-            color: #b2bec3;
+            font-size: .65rem;
         }
-
-        .history-ball.drawn {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        /* Cartón de Bingo */
-        .card-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .bingo-card {
-            background: white;
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            border: 3px solid var(--primary);
-            max-width: 450px;
-            width: 100%;
-        }
-
-        .bingo-header {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .bingo-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-        }
-
-        .bingo-cell {
-            aspect-ratio: 1;
-            background-color: #f1f2f6;
-            border: 2px solid #ced6e0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.2s;
-        }
-
-        .bingo-cell:hover {
-            background-color: #e4e7eb;
-        }
-
-        .bingo-cell.marked {
-            background-color: var(--success);
-            color: white;
-            border-color: #2ed573;
-            transform: scale(0.95);
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-        }
-
-        .bingo-cell.free-space {
-            background-color: var(--secondary);
-            color: var(--dark);
-            font-size: 0.8rem;
-            text-align: center;
-        }
-    </style>
+    }
+</style>
 </head>
+
 <body>
 
+<div class="app">
+
+    <!-- =========================
+         ENCABEZADO
+    ========================== -->
+
     <header>
-        <h1>🎉 Gran Bingo Night 🎉</h1>
+        <h1 class="logo">GRAN BINGO NIGHT</h1>
+        <div class="subtitle">La noche del Bingo comienza aquí 🎉</div>
     </header>
 
-    <div class="container">
-        
-        <!-- PANEL DEL ANFITRIÓN (BOMBO) -->
-        <div class="panel">
-            <h2>Bombo Digital</h2>
-            <div class="ball-display" id="currentBall">-</div>
-            <button class="btn" id="btnDraw" onclick="drawNumber()">Sacar Número</button>
-            <button class="btn btn-danger" onclick="resetGame()">Reiniciar Juego</button>
-            
-            <h3 style="margin-top: 30px; align-self: flex-start;">Panel de Control (1-75):</h3>
-            <div class="history-grid" id="historyGrid"></div>
+
+    <!-- =========================
+         PANTALLA INICIO
+    ========================== -->
+
+    <section id="homeScreen" class="screen active">
+
+        <div class="panel home-card">
+
+            <h2>🎱 Bienvenido</h2>
+
+            <p class="description">
+                Crea una partida, invita a tus jugadores y disfruta
+                de tu Bingo Night desde el teléfono.
+            </p>
+
+            <button class="btn btn-primary" onclick="showCreateScreen()">
+                🎮 Crear partida
+            </button>
+
+            <button class="btn btn-gold" onclick="showJoinScreen()">
+                🔑 Unirse a partida
+            </button>
+
         </div>
 
-        <!-- PANEL DEL JUGADOR (CARTÓN) -->
-        <div class="panel card-container">
-            <h2>Tu Cartón Virtual</h2>
-            <button class="btn btn-success" style="width: auto;" onclick="generateNewCard()">Generar Nuevo Cartón</button>
-            
-            <div class="bingo-card">
-                <div class="bingo-header">
-                    <div>B</div><div>I</div><div>N</div><div>G</div><div>O</div>
-                </div>
-                <div class="bingo-grid" id="bingoGrid">
-                    <!-- Las celdas se generarán con JS -->
-                </div>
+    </section>
+
+
+    <!-- =========================
+         CREAR PARTIDA
+    ========================== -->
+
+    <section id="createScreen" class="screen">
+
+        <div class="panel home-card">
+
+            <h2>🎮 Crear partida</h2>
+
+            <div class="form-group">
+                <label for="hostName">Nombre del anfitrión</label>
+                <input
+                    id="hostName"
+                    type="text"
+                    placeholder="Ej. Carlos"
+                    maxlength="20"
+                >
             </div>
+
+            <button class="btn btn-primary" onclick="createGame()">
+                Crear sala
+            </button>
+
+            <button class="btn btn-secondary" onclick="showHome()">
+                Volver
+            </button>
+
         </div>
 
+    </section>
+
+
+    <!-- =========================
+         UNIRSE
+    ========================== -->
+
+    <section id="joinScreen" class="screen">
+
+        <div class="panel home-card">
+
+            <h2>🔑 Unirse a partida</h2>
+
+            <div class="form-group">
+                <label for="playerName">Tu nombre</label>
+                <input
+                    id="playerName"
+                    type="text"
+                    placeholder="Ej. María"
+                    maxlength="20"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="roomInput">Código de sala</label>
+                <input
+                    id="roomInput"
+                    type="text"
+                    placeholder="Ej. GB7421"
+                    maxlength="6"
+                    style="text-transform:uppercase;"
+                >
+            </div>
+
+            <button class="btn btn-gold" onclick="joinGame()">
+                Entrar a la sala
+            </button>
+
+            <button class="btn btn-secondary" onclick="showHome()">
+                Volver
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         SALA
+    ========================== -->
+
+    <section id="roomScreen" class="screen">
+
+        <div class="panel">
+
+            <h2 style="text-align:center;">
+                🎉 Sala de partida
+            </h2>
+
+            <div class="room-code">
+                <small>CÓDIGO DE SALA</small>
+                <strong id="roomCode">------</strong>
+            </div>
+
+            <p style="text-align:center;color:var(--muted);">
+                Comparte este código con los jugadores.
+            </p>
+
+            <h3>👥 Jugadores</h3>
+
+            <div id="playersList" class="players"></div>
+
+            <div id="hostControls">
+
+                <button
+                    class="btn btn-green"
+                    onclick="startGame()"
+                >
+                    🚀 Comenzar Bingo
+                </button>
+
+            </div>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showHome()"
+            >
+                Salir de la sala
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         JUEGO
+    ========================== -->
+
+    <section id="gameScreen" class="screen">
+
+        <div class="game-topbar">
+
+            <div class="room-pill">
+                Sala: <strong id="gameRoomCode">------</strong>
+            </div>
+
+            <div class="room-pill">
+                Jugadores:
+                <strong id="playerCount">0</strong>
+            </div>
+
+        </div>
+
+
+        <div class="game-layout">
+
+            <!-- PANEL ANFITRIÓN -->
+
+            <div class="panel">
+
+                <h2 style="text-align:center;">
+                    🎱 Bombo Digital
+                </h2>
+
+                <div class="current-label">
+                    NÚMERO ACTUAL
+                </div>
+
+                <div
+                    class="ball-display"
+                    id="currentBall"
+                >
+                    —
+                </div>
+
+                <button
+                    id="drawButton"
+                    class="btn btn-primary"
+                    onclick="drawNumber()"
+                >
+                    🎱 Sacar número
+                </button>
+
+                <button
+                    class="btn btn-red"
+                    onclick="resetGame()"
+                >
+                    🔄 Reiniciar partida
+                </button>
+
+                <h3 style="margin-top:25px;">
+                    Historial 1–75
+                </h3>
+
+                <div
+                    id="historyGrid"
+                    class="history-grid"
+                ></div>
+
+                <div
+                    id="gameStatus"
+                    class="status"
+                >
+                    Partida lista
+                </div>
+
+            </div>
+
+
+            <!-- CARTÓN -->
+
+            <div class="panel">
+
+                <h2 style="text-align:center;">
+                    🎟️ Tu Cartón
+                </h2>
+
+                <p
+                    style="text-align:center;color:var(--muted);"
+                >
+                    Toca una casilla para marcarla.
+                </p>
+
+                <div class="bingo-card">
+
+                    <div class="bingo-header">
+                        <div>B</div>
+                        <div>I</div>
+                        <div>N</div>
+                        <div>G</div>
+                        <div>O</div>
+                    </div>
+
+                    <div
+                        id="bingoGrid"
+                        class="bingo-grid"
+                    ></div>
+
+                </div>
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="generateNewCard()"
+                >
+                    🎟️ Generar otro cartón
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <div class="footer">
+        Gran Bingo Night © 2026
     </div>
 
-    <script>
-        // Lógica del Bombo (1 al 75)
-        let pool = [];
-        let drawnNumbers = new Set();
+</div>
 
-        function initPool() {
-            pool = Array.from({length: 75}, (_, i) => i + 1);
-            drawnNumbers.clear();
-            document.getElementById('currentBall').innerText = '-';
-            createHistoryGrid();
+
+<script>
+
+/* =====================================================
+   ESTADO PRINCIPAL
+===================================================== */
+
+let pool = [];
+let drawnNumbers = new Set();
+
+let currentRoom = "";
+let isHost = false;
+
+let players = [];
+
+let currentCard = [];
+
+
+/* =====================================================
+   NAVEGACIÓN
+===================================================== */
+
+function showScreen(id) {
+
+    document.querySelectorAll(".screen").forEach(screen => {
+        screen.classList.remove("active");
+    });
+
+    document.getElementById(id).classList.add("active");
+}
+
+
+function showHome() {
+    showScreen("homeScreen");
+}
+
+
+function showCreateScreen() {
+    showScreen("createScreen");
+}
+
+
+function showJoinScreen() {
+    showScreen("joinScreen");
+}
+
+
+/* =====================================================
+   CREAR PARTIDA
+===================================================== */
+
+function createGame() {
+
+    const name =
+        document.getElementById("hostName").value.trim();
+
+    if (!name) {
+        alert("Escribe tu nombre primero.");
+        return;
+    }
+
+    currentRoom = generateRoomCode();
+
+    isHost = true;
+
+    players = [
+        {
+            name: name,
+            host: true
         }
+    ];
 
-        function createHistoryGrid() {
-            const grid = document.getElementById('historyGrid');
-            grid.innerHTML = '';
-            for (let i = 1; i <= 75; i++) {
-                const ball = document.createElement('div');
-                ball.classList.add('history-ball');
-                ball.id = `hist-${i}`;
-                ball.innerText = i;
-                grid.appendChild(ball);
+    document.getElementById("roomCode").innerText =
+        currentRoom;
+
+    updatePlayers();
+
+    showScreen("roomScreen");
+}
+
+
+/* =====================================================
+   UNIRSE A PARTIDA
+===================================================== */
+
+function joinGame() {
+
+    const name =
+        document.getElementById("playerName").value.trim();
+
+    const room =
+        document.getElementById("roomInput").value
+        .trim()
+        .toUpperCase();
+
+    if (!name) {
+        alert("Escribe tu nombre.");
+        return;
+    }
+
+    if (!room) {
+        alert("Escribe el código de sala.");
+        return;
+    }
+
+    currentRoom = room;
+
+    isHost = false;
+
+    players = [
+        {
+            name: name,
+            host: false
+        }
+    ];
+
+    document.getElementById("roomCode").innerText =
+        currentRoom;
+
+    updatePlayers();
+
+    showScreen("roomScreen");
+
+    document.getElementById("hostControls")
+        .classList.add("hidden");
+}
+
+
+/* =====================================================
+   CÓDIGO DE SALA
+===================================================== */
+
+function generateRoomCode() {
+
+    const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+    let code = "GB";
+
+    for (let i = 0; i < 4; i++) {
+        code += Math.floor(Math.random() * 10);
+    }
+
+    return code;
+}
+
+
+/* =====================================================
+   JUGADORES
+===================================================== */
+
+function updatePlayers() {
+
+    const list =
+        document.getElementById("playersList");
+
+    list.innerHTML = "";
+
+    players.forEach(player => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "player";
+
+        item.innerHTML = `
+            <span>👤 ${escapeHtml(player.name)}</span>
+            ${
+                player.host
+                ? '<span class="host-badge">ANFITRIÓN</span>'
+                : ''
             }
-        }
+        `;
 
-        function drawNumber() {
-            if (pool.length === 0) {
-                alert('¡Ya se han sacado todos los números!');
-                return;
-            }
-            const randomIndex = Math.floor(Math.random() * pool.length);
-            const num = pool.splice(randomIndex, 1)[0];
-            drawnNumbers.add(num);
+        list.appendChild(item);
 
-            // Mostrar número actual
-            let letter = '';
-            if (num <= 15) letter = 'B';
-            else if (num <= 30) letter = 'I';
-            else if (num <= 45) letter = 'N';
-            else if (num <= 60) letter = 'G';
-            else letter = 'O';
+    });
 
-            document.getElementById('currentBall').innerText = `${letter}${num}`;
-            
-            // Marcar en el historial
-            document.getElementById(`hist-${num}`).classList.add('drawn');
-        }
+    document.getElementById("playerCount").innerText =
+        players.length;
+}
 
-        function resetGame() {
-            if (confirm('¿Seguro que deseas reiniciar el sorteo?')) {
-                initPool();
-            }
-        }
 
-        // Lógica del Cartón de Bingo (Estilo Americano tradicional)
-        // B: 1-15, I: 16-30, N: 31-45, G: 46-60, O: 61-75
-        function getRandomColumnNumbers(min, max, count) {
-            const numbers = [];
-            while (numbers.length < count) {
-                const num = Math.floor(Math.random() * (max - min + 1)) + min;
-                if (!numbers.includes(num)) {
-                    numbers.push(num);
-                }
-            }
-            return numbers.sort((a, b) => a - b);
-        }
+/* =====================================================
+   COMENZAR PARTIDA
+===================================================== */
 
-        function generateNewCard() {
-            const grid = document.getElementById('bingoGrid');
-            grid.innerHTML = '';
+function startGame() {
 
-            const cols = [
-                getRandomColumnNumbers(1, 15, 5),
-                getRandomColumnNumbers(16, 30, 5),
-                getRandomColumnNumbers(31, 45, 5),
-                getRandomColumnNumbers(46, 60, 5),
-                getRandomColumnNumbers(61, 75, 5)
-            ];
+    if (!isHost) {
+        alert("Solo el anfitrión puede comenzar la partida.");
+        return;
+    }
 
-            // Reorganizar de columnas a filas para construir la cuadrícula HTML
-            for (let row = 0; row < 5; row++) {
-                for (let col = 0; col < 5; col++) {
-                    const cell = document.createElement('div');
-                    cell.classList.add('bingo-cell');
+    initGame();
 
-                    // Espacio libre central (Fila 2, Columna 2 indexada en 0)
-                    if (row === 2 && col === 2) {
-                        cell.classList.add('free-space', 'marked');
-                        cell.innerText = 'LIBRE';
+    document.getElementById("gameRoomCode").innerText =
+        currentRoom;
+
+    showScreen("gameScreen");
+}
+
+
+/* =====================================================
+   INICIALIZAR JUEGO
+===================================================== */
+
+function initGame() {
+
+    pool = Array.from(
+        { length: 75 },
+        (_, index) => index + 1
+    );
+
+    drawnNumbers.clear();
+
+    document.getElementById("currentBall")
+        .innerText = "—";
+
+    createHistoryGrid();
+
+    generateNewCard();
+
+    document.getElementById("gameStatus")
+        .innerText = "Part
