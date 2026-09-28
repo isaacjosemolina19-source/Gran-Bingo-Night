@@ -3,437 +3,420 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#17132f">
+<meta name="theme-color" content="#080611">
 <title>Gran Bingo Night</title>
 
 <style>
-    :root {
-        --bg: #0d0a1f;
-        --panel: #17132f;
-        --panel-2: #211b42;
-        --primary: #7c5cff;
-        --primary-light: #a992ff;
-        --gold: #ffd166;
-        --green: #21d19f;
-        --red: #ff5c70;
-        --white: #ffffff;
-        --muted: #aaa4c5;
-        --line: rgba(255,255,255,.10);
-        --shadow: 0 15px 40px rgba(0,0,0,.30);
-    }
+:root {
+    --bg:#070510;
+    --bg2:#10091f;
+    --panel:rgba(20,13,38,.94);
+    --panel2:#19102e;
+    --purple:#8b5cf6;
+    --purple-light:#b794ff;
+    --blue:#00d9ff;
+    --gold:#ffd166;
+    --green:#21e6a1;
+    --red:#ff4f70;
+    --white:#fff;
+    --muted:#aaa4c5;
+    --line:rgba(255,255,255,.10);
+    --shadow:0 20px 60px rgba(0,0,0,.55);
+}
 
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing:border-box;
+}
 
-    body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Arial, Helvetica, sans-serif;
-        background:
-            radial-gradient(circle at top, #30205e 0%, var(--bg) 45%);
-        color: var(--white);
-    }
+body {
+    margin:0;
+    min-height:100vh;
+    font-family:Arial,Helvetica,sans-serif;
+    color:var(--white);
+    background:
+        radial-gradient(circle at 20% 0%,rgba(139,92,246,.28),transparent 35%),
+        radial-gradient(circle at 90% 20%,rgba(0,217,255,.14),transparent 30%),
+        linear-gradient(180deg,#0b0616 0%,#070510 100%);
+}
 
-    button,
-    input {
-        font: inherit;
-    }
+button,input {
+    font:inherit;
+}
 
+.app {
+    width:100%;
+    max-width:1200px;
+    margin:auto;
+    padding:15px;
+}
+
+header {
+    text-align:center;
+    padding:20px 10px 30px;
+}
+
+.logo {
+    margin:0;
+    font-size:clamp(2rem,8vw,4.5rem);
+    font-weight:900;
+    letter-spacing:3px;
+    background:linear-gradient(
+        90deg,
+        #fff,
+        var(--blue),
+        var(--purple-light),
+        var(--gold)
+    );
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 15px rgba(139,92,246,.35));
+}
+
+.subtitle {
+    margin-top:10px;
+    color:var(--muted);
+}
+
+.screen {
+    display:none;
+}
+
+.screen.active {
+    display:block;
+}
+
+.panel {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28,18,51,.96),
+            rgba(12,8,25,.96)
+        );
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:22px;
+    box-shadow:var(--shadow);
+}
+
+.home-card {
+    max-width:540px;
+    margin:25px auto;
+    text-align:center;
+}
+
+h2 {
+    margin-top:0;
+}
+
+.description {
+    color:var(--muted);
+    line-height:1.6;
+}
+
+.btn {
+    width:100%;
+    border:0;
+    border-radius:14px;
+    padding:15px 18px;
+    margin-top:12px;
+    cursor:pointer;
+    color:white;
+    font-weight:800;
+    font-size:1rem;
+    transition:.15s;
+}
+
+.btn:hover {
+    transform:translateY(-2px);
+}
+
+.btn-primary {
+    background:linear-gradient(135deg,#8b5cf6,#5730d8);
+    box-shadow:0 0 25px rgba(139,92,246,.25);
+}
+
+.btn-gold {
+    background:linear-gradient(135deg,#ffd166,#f4a51c);
+    color:#211800;
+}
+
+.btn-green {
+    background:linear-gradient(135deg,#21e6a1,#079d78);
+    color:#001c13;
+}
+
+.btn-red {
+    background:linear-gradient(135deg,#ff4f70,#c92c4b);
+}
+
+.btn-secondary {
+    background:var(--panel2);
+    border:1px solid var(--line);
+}
+
+.form-group {
+    margin-bottom:15px;
+    text-align:left;
+}
+
+label {
+    display:block;
+    margin-bottom:7px;
+    color:var(--muted);
+    font-weight:700;
+}
+
+input {
+    width:100%;
+    padding:14px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(5,3,15,.8);
+    color:white;
+    outline:none;
+}
+
+input:focus {
+    border-color:var(--purple-light);
+    box-shadow:0 0 15px rgba(139,92,246,.18);
+}
+
+.room-code {
+    text-align:center;
+    margin:20px 0;
+    padding:22px;
+    border-radius:18px;
+    background:linear-gradient(145deg,#211440,#110a20);
+    border:1px solid rgba(139,92,246,.25);
+}
+
+.room-code small {
+    color:var(--muted);
+}
+
+.room-code strong {
+    display:block;
+    margin-top:8px;
+    font-size:2.5rem;
+    letter-spacing:8px;
+    color:var(--gold);
+}
+
+.players {
+    display:grid;
+    gap:10px;
+    margin-top:15px;
+}
+
+.player {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(5,3,15,.65);
+    padding:13px 15px;
+    border-radius:13px;
+    border:1px solid rgba(255,255,255,.06);
+}
+
+.host-badge {
+    color:var(--gold);
+    font-size:.75rem;
+    font-weight:800;
+}
+
+.game-layout {
+    display:grid;
+    gap:20px;
+}
+
+@media (min-width:850px) {
+    .game-layout {
+        grid-template-columns:340px 1fr;
+        align-items:start;
+    }
+}
+
+.game-topbar {
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+}
+
+.room-pill {
+    background:var(--panel2);
+    border:1px solid var(--line);
+    padding:10px 14px;
+    border-radius:999px;
+    color:var(--muted);
+}
+
+.ball-display {
+    width:180px;
+    height:180px;
+    margin:20px auto;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            #fff 0%,
+            #fff4b0 8%,
+            var(--gold) 35%,
+            #d99000 100%
+        );
+    color:#211800;
+    border:7px solid #fff;
+    box-shadow:
+        0 0 0 8px rgba(255,209,102,.12),
+        0 0 35px rgba(255,209,102,.2),
+        0 18px 45px rgba(0,0,0,.5);
+    font-size:3.2rem;
+    font-weight:900;
+}
+
+.current-label {
+    text-align:center;
+    color:var(--muted);
+    font-size:.8rem;
+    letter-spacing:2px;
+}
+
+.history-grid {
+    display:grid;
+    grid-template-columns:repeat(10,1fr);
+    gap:5px;
+    margin-top:15px;
+}
+
+.history-ball {
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#0d0919;
+    border:1px solid rgba(255,255,255,.08);
+    color:#69627f;
+    font-size:.72rem;
+    font-weight:800;
+}
+
+.history-ball.drawn {
+    background:var(--purple);
+    color:white;
+    border-color:var(--purple-light);
+    box-shadow:0 0 10px rgba(139,92,246,.25);
+}
+
+.bingo-card {
+    background:#f8f7ff;
+    color:#17132f;
+    padding:12px;
+    border-radius:18px;
+    max-width:620px;
+    margin:auto;
+    box-shadow:0 20px 50px rgba(0,0,0,.4);
+}
+
+.bingo-header,
+.bingo-grid {
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:6px;
+}
+
+.bingo-header {
+    margin-bottom:6px;
+}
+
+.bingo-header div {
+    text-align:center;
+    font-size:clamp(1.4rem,5vw,2.2rem);
+    font-weight:900;
+    color:var(--purple);
+}
+
+.bingo-cell {
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:#e8e5f5;
+    border:2px solid #d2cee5;
+    font-size:clamp(.9rem,3.5vw,1.4rem);
+    font-weight:900;
+    cursor:pointer;
+    user-select:none;
+    transition:.15s;
+}
+
+.bingo-cell:hover {
+    transform:scale(.97);
+}
+
+.bingo-cell.marked {
+    background:var(--green);
+    border-color:#0b9c76;
+    color:white;
+    box-shadow:0 0 12px rgba(33,230,161,.3);
+}
+
+.bingo-cell.free {
+    background:var(--gold);
+    color:#211800;
+    font-size:.75rem;
+}
+
+.status {
+    margin-top:15px;
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    background:rgba(33,230,161,.08);
+    color:var(--green);
+    font-weight:700;
+}
+    .hidden {
+    display:none !important;
+}
+
+.footer {
+    text-align:center;
+    padding:30px 0 10px;
+    color:#69647d;
+    font-size:.8rem;
+}
+
+@media (max-width:500px) {
     .app {
-        width: 100%;
-        max-width: 1200px;
-        margin: auto;
-        padding: 18px;
+        padding:10px;
     }
-
-    /* =========================
-       HEADER
-    ========================= */
-
-    header {
-        text-align: center;
-        padding: 18px 10px 25px;
-    }
-
-    .logo {
-        font-size: clamp(2rem, 7vw, 4rem);
-        font-weight: 900;
-        letter-spacing: 2px;
-        margin: 0;
-        background: linear-gradient(90deg, #fff, var(--gold), var(--primary-light));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .subtitle {
-        color: var(--muted);
-        margin-top: 8px;
-    }
-
-    /* =========================
-       SCREENS
-    ========================= */
-
-    .screen {
-        display: none;
-    }
-
-    .screen.active {
-        display: block;
-    }
-
-    /* =========================
-       CARDS
-    ========================= */
 
     .panel {
-        background: rgba(23,19,47,.94);
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        padding: 22px;
-        box-shadow: var(--shadow);
+        padding:16px;
+        border-radius:19px;
     }
-
-    .home-card {
-        max-width: 520px;
-        margin: 25px auto;
-        text-align: center;
-    }
-
-    h2 {
-        margin-top: 0;
-    }
-
-    .description {
-        color: var(--muted);
-        line-height: 1.6;
-    }
-
-    /* =========================
-       BUTTONS
-    ========================= */
-
-    .btn {
-        width: 100%;
-        border: 0;
-        border-radius: 13px;
-        padding: 15px 18px;
-        margin-top: 12px;
-        cursor: pointer;
-        color: white;
-        font-weight: 800;
-        font-size: 1rem;
-        transition: transform .15s, opacity .15s;
-    }
-
-    .btn:hover {
-        transform: translateY(-2px);
-        opacity: .94;
-    }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--primary), #5940db);
-    }
-
-    .btn-gold {
-        background: linear-gradient(135deg, #ffd166, #f5a623);
-        color: #211800;
-    }
-
-    .btn-green {
-        background: linear-gradient(135deg, #21d19f, #0da879);
-    }
-
-    .btn-red {
-        background: linear-gradient(135deg, #ff5c70, #d9364e);
-    }
-
-    .btn-secondary {
-        background: var(--panel-2);
-        border: 1px solid var(--line);
-    }
-
-    /* =========================
-       FORMULARIOS
-    ========================= */
-
-    .form-group {
-        margin-bottom: 15px;
-        text-align: left;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 7px;
-        color: var(--muted);
-        font-weight: 700;
-    }
-
-    input {
-        width: 100%;
-        padding: 14px;
-        border-radius: 12px;
-        border: 1px solid var(--line);
-        background: #0f0c22;
-        color: white;
-        outline: none;
-    }
-
-    input:focus {
-        border-color: var(--primary-light);
-    }
-
-    /* =========================
-       SALA
-    ========================= */
-
-    .room-code {
-        text-align: center;
-        margin: 20px 0;
-        padding: 20px;
-        border-radius: 18px;
-        background: var(--panel-2);
-    }
-
-    .room-code small {
-        color: var(--muted);
-    }
-
-    .room-code strong {
-        display: block;
-        font-size: 2.4rem;
-        letter-spacing: 8px;
-        color: var(--gold);
-        margin-top: 8px;
-    }
-
-    .players {
-        display: grid;
-        gap: 10px;
-        margin-top: 15px;
-    }
-
-    .player {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: #100d24;
-        padding: 12px 15px;
-        border-radius: 12px;
-    }
-
-    .host-badge {
-        color: var(--gold);
-        font-size: .8rem;
-        font-weight: 800;
-    }
-
-    /* =========================
-       JUEGO
-    ========================= */
-
-    .game-layout {
-        display: grid;
-        gap: 20px;
-    }
-
-    @media (min-width: 850px) {
-        .game-layout {
-            grid-template-columns: 340px 1fr;
-            align-items: start;
-        }
-    }
-
-    .game-topbar {
-        display: flex;
-        justify-content: space-between;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 18px;
-    }
-
-    .room-pill {
-        background: var(--panel-2);
-        border: 1px solid var(--line);
-        padding: 10px 14px;
-        border-radius: 999px;
-        color: var(--muted);
-    }
-
-    /* =========================
-       BOMBO
-    ========================= */
 
     .ball-display {
-        width: 180px;
-        height: 180px;
-        margin: 20px auto;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        background:
-            radial-gradient(circle at 30% 25%, #fff 0%, #fff4b0 8%, var(--gold) 35%, #d99000 100%);
-
-        color: #211800;
-        border: 7px solid #fff;
-        box-shadow:
-            0 0 0 8px rgba(255,209,102,.15),
-            0 18px 40px rgba(0,0,0,.4);
-
-        font-size: 3.2rem;
-        font-weight: 900;
-    }
-
-    .current-label {
-        text-align: center;
-        color: var(--muted);
-    }
-
-    /* =========================
-       HISTORIAL
-    ========================= */
-
-    .history-grid {
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        gap: 5px;
-        margin-top: 15px;
+        width:145px;
+        height:145px;
+        font-size:2.5rem;
     }
 
     .history-ball {
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: #0d0a1d;
-        border: 1px solid var(--line);
-        color: #706b88;
-        font-size: .75rem;
-        font-weight: 800;
+        font-size:.62rem;
     }
 
-    .history-ball.drawn {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary-light);
+    .room-code strong {
+        font-size:2rem;
     }
-
-    /* =========================
-       CARTÓN
-    ========================= */
-
-    .bingo-card {
-        background: #f8f7ff;
-        color: #17132f;
-        padding: 12px;
-        border-radius: 18px;
-        max-width: 620px;
-        margin: auto;
-        box-shadow: 0 20px 50px rgba(0,0,0,.3);
-    }
-
-    .bingo-header,
-    .bingo-grid {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
-    }
-
-    .bingo-header {
-        margin-bottom: 6px;
-    }
-
-    .bingo-header div {
-        text-align: center;
-        font-size: clamp(1.4rem, 5vw, 2.2rem);
-        font-weight: 900;
-        color: var(--primary);
-    }
-
-    .bingo-cell {
-        aspect-ratio: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9px;
-        background: #e8e5f5;
-        border: 2px solid #d2cee5;
-        font-size: clamp(.9rem, 3.5vw, 1.4rem);
-        font-weight: 900;
-        cursor: pointer;
-        user-select: none;
-        transition: .15s;
-    }
-
-    .bingo-cell:hover {
-        transform: scale(.97);
-    }
-
-    .bingo-cell.marked {
-        background: var(--green);
-        border-color: #0b9c76;
-        color: white;
-    }
-
-    .bingo-cell.free {
-        background: var(--gold);
-        color: #211800;
-        font-size: .75rem;
-    }
-
-    /* =========================
-       ESTADO
-    ========================= */
-
-    .status {
-        margin-top: 15px;
-        padding: 12px;
-        border-radius: 12px;
-        text-align: center;
-        background: rgba(33,209,159,.1);
-        color: var(--green);
-        font-weight: 700;
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    .footer {
-        text-align: center;
-        padding: 30px 0 10px;
-        color: #69647d;
-        font-size: .8rem;
-    }
-
-    @media (max-width: 500px) {
-        .app {
-            padding: 10px;
-        }
-
-        .panel {
-            padding: 16px;
-            border-radius: 18px;
-        }
-
-        .ball-display {
-            width: 145px;
-            height: 145px;
-            font-size: 2.5rem;
-        }
-
-        .history-grid {
-            grid-template-columns: repeat(10, 1fr);
-        }
-
-        .history-ball {
-            font-size: .65rem;
-        }
-    }
+}
 </style>
 </head>
 
@@ -441,324 +424,380 @@
 
 <div class="app">
 
-    <!-- =========================
-         ENCABEZADO
-    ========================== -->
+<header>
+    <h1 class="logo">GRAN BINGO NIGHT</h1>
+    <div class="subtitle">
+        La noche del Bingo comienza aquí 🎉
+    </div>
+</header>
 
-    <header>
-        <h1 class="logo">GRAN BINGO NIGHT</h1>
-        <div class="subtitle">La noche del Bingo comienza aquí 🎉</div>
-    </header>
+<section id="homeScreen" class="screen active">
 
+    <div class="panel home-card">
 
-    <!-- =========================
-         PANTALLA INICIO
-    ========================== -->
+        <h2>🎱 Bienvenido</h2>
 
-    <section id="homeScreen" class="screen active">
+        <p class="description">
+            Crea una partida, invita a tus jugadores
+            y disfruta de tu Bingo Night desde cualquier teléfono.
+        </p>
 
-        <div class="panel home-card">
+        <button
+            class="btn btn-primary"
+            onclick="showCreateScreen()">
+            🎮 Crear partida
+        </button>
 
-            <h2>🎱 Bienvenido</h2>
+        <button
+            class="btn btn-gold"
+            onclick="showJoinScreen()">
+            🔑 Unirse a partida
+        </button>
 
-            <p class="description">
-                Crea una partida, invita a tus jugadores y disfruta
-                de tu Bingo Night desde el teléfono.
-            </p>
+    </div>
 
-            <button class="btn btn-primary" onclick="showCreateScreen()">
-                🎮 Crear partida
-            </button>
+</section>
 
-            <button class="btn btn-gold" onclick="showJoinScreen()">
-                🔑 Unirse a partida
+<section id="createScreen" class="screen">
+
+    <div class="panel home-card">
+
+        <h2>🎮 Crear partida</h2>
+
+        <div class="form-group">
+
+            <label for="hostName">
+                Nombre del anfitrión
+            </label>
+
+            <input
+                id="hostName"
+                type="text"
+                placeholder="Ej. Carlos"
+                maxlength="20">
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="createGame()">
+            Crear sala
+        </button>
+
+        <button
+            class="btn btn-secondary"
+            onclick="showHome()">
+            Volver
+        </button>
+
+    </div>
+
+</section>
+
+<section id="joinScreen" class="screen">
+
+    <div class="panel home-card">
+
+        <h2>🔑 Unirse a partida</h2>
+
+        <div class="form-group">
+
+            <label for="playerName">
+                Tu nombre
+            </label>
+
+            <input
+                id="playerName"
+                type="text"
+                placeholder="Ej. María"
+                maxlength="20">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="roomInput">
+                Código de sala
+            </label>
+
+            <input
+                id="roomInput"
+                type="text"
+                placeholder="Ej. GB7421"
+                maxlength="6"
+                style="text-transform:uppercase;">
+
+        </div>
+
+        <button
+            class="btn btn-gold"
+            onclick="joinGame()">
+            Entrar a la sala
+        </button>
+
+        <button
+            class="btn btn-secondary"
+            onclick="showHome()">
+            Volver
+        </button>
+
+    </div>
+
+</section>
+
+<section id="roomScreen" class="screen">
+
+    <div class="panel">
+
+        <h2 style="text-align:center;">
+            🎉 Sala de partida
+        </h2>
+
+        <div class="room-code">
+
+            <small>CÓDIGO DE SALA</small>
+
+            <strong id="roomCode">
+                ------
+            </strong>
+
+        </div>
+
+        <p style="text-align:center;color:var(--muted);">
+            Comparte este código con los jugadores.
+        </p>
+
+        <h3>👥 Jugadores</h3>
+
+        <div
+            id="playersList"
+            class="players">
+        </div>
+
+        <div id="hostControls">
+
+            <button
+                class="btn btn-green"
+                onclick="startGame()">
+                🚀 Comenzar Bingo
             </button>
 
         </div>
 
-    </section>
+        <button
+            class="btn btn-secondary"
+            onclick="leaveRoom()">
+            Salir de la sala
+        </button>
 
+    </div>
 
-    <!-- =========================
-         CREAR PARTIDA
-    ========================== -->
+</section>
 
-    <section id="createScreen" class="screen">
+<section id="gameScreen" class="screen">
 
-        <div class="panel home-card">
+    <div class="game-topbar">
 
-            <h2>🎮 Crear partida</h2>
-
-            <div class="form-group">
-                <label for="hostName">Nombre del anfitrión</label>
-                <input
-                    id="hostName"
-                    type="text"
-                    placeholder="Ej. Carlos"
-                    maxlength="20"
-                >
-            </div>
-
-            <button class="btn btn-primary" onclick="createGame()">
-                Crear sala
-            </button>
-
-            <button class="btn btn-secondary" onclick="showHome()">
-                Volver
-            </button>
-
+        <div class="room-pill">
+            Sala:
+            <strong id="gameRoomCode">------</strong>
         </div>
 
-    </section>
-
-
-    <!-- =========================
-         UNIRSE
-    ========================== -->
-
-    <section id="joinScreen" class="screen">
-
-        <div class="panel home-card">
-
-            <h2>🔑 Unirse a partida</h2>
-
-            <div class="form-group">
-                <label for="playerName">Tu nombre</label>
-                <input
-                    id="playerName"
-                    type="text"
-                    placeholder="Ej. María"
-                    maxlength="20"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="roomInput">Código de sala</label>
-                <input
-                    id="roomInput"
-                    type="text"
-                    placeholder="Ej. GB7421"
-                    maxlength="6"
-                    style="text-transform:uppercase;"
-                >
-            </div>
-
-            <button class="btn btn-gold" onclick="joinGame()">
-                Entrar a la sala
-            </button>
-
-            <button class="btn btn-secondary" onclick="showHome()">
-                Volver
-            </button>
-
+        <div class="room-pill">
+            Jugadores:
+            <strong id="playerCount">0</strong>
         </div>
 
-    </section>
+    </div>
 
-
-    <!-- =========================
-         SALA
-    ========================== -->
-
-    <section id="roomScreen" class="screen">
+    <div class="game-layout">
 
         <div class="panel">
 
             <h2 style="text-align:center;">
-                🎉 Sala de partida
+                🎱 Bombo Digital
             </h2>
 
-            <div class="room-code">
-                <small>CÓDIGO DE SALA</small>
-                <strong id="roomCode">------</strong>
+            <div class="current-label">
+                NÚMERO ACTUAL
             </div>
 
+            <div
+                class="ball-display"
+                id="currentBall">
+                —
+            </div>
+
+            <button
+                id="drawButton"
+                class="btn btn-primary"
+                onclick="drawNumber()">
+                🎱 Sacar número
+            </button>
+
+            <button
+                id="resetButton"
+                class="btn btn-red"
+                onclick="resetGame()">
+                🔄 Reiniciar partida
+            </button>
+
+            <h3 style="margin-top:25px;">
+                Historial 1–75
+            </h3>
+
+            <div
+                id="historyGrid"
+                class="history-grid">
+            </div>
+
+            <div
+                id="gameStatus"
+                class="status">
+                Partida lista
+            </div>
+
+        </div>
+
+        <div class="panel">
+
+            <h2 style="text-align:center;">
+                🎟️ Tu Cartón
+            </h2>
+
             <p style="text-align:center;color:var(--muted);">
-                Comparte este código con los jugadores.
+                Toca una casilla para marcarla.
             </p>
 
-            <h3>👥 Jugadores</h3>
+            <div class="bingo-card">
 
-            <div id="playersList" class="players"></div>
+                <div class="bingo-header">
+                    <div>B</div>
+                    <div>I</div>
+                    <div>N</div>
+                    <div>G</div>
+                    <div>O</div>
+                </div>
 
-            <div id="hostControls">
-
-                <button
-                    class="btn btn-green"
-                    onclick="startGame()"
-                >
-                    🚀 Comenzar Bingo
-                </button>
+                <div
+                    id="bingoGrid"
+                    class="bingo-grid">
+                </div>
 
             </div>
 
             <button
                 class="btn btn-secondary"
-                onclick="showHome()"
-            >
-                Salir de la sala
+                onclick="generateNewCard()">
+                🎟️ Generar otro cartón
             </button>
 
         </div>
 
-    </section>
-
-
-    <!-- =========================
-         JUEGO
-    ========================== -->
-
-    <section id="gameScreen" class="screen">
-
-        <div class="game-topbar">
-
-            <div class="room-pill">
-                Sala: <strong id="gameRoomCode">------</strong>
-            </div>
-
-            <div class="room-pill">
-                Jugadores:
-                <strong id="playerCount">0</strong>
-            </div>
-
-        </div>
-
-
-        <div class="game-layout">
-
-            <!-- PANEL ANFITRIÓN -->
-
-            <div class="panel">
-
-                <h2 style="text-align:center;">
-                    🎱 Bombo Digital
-                </h2>
-
-                <div class="current-label">
-                    NÚMERO ACTUAL
-                </div>
-
-                <div
-                    class="ball-display"
-                    id="currentBall"
-                >
-                    —
-                </div>
-
-                <button
-                    id="drawButton"
-                    class="btn btn-primary"
-                    onclick="drawNumber()"
-                >
-                    🎱 Sacar número
-                </button>
-
-                <button
-                    class="btn btn-red"
-                    onclick="resetGame()"
-                >
-                    🔄 Reiniciar partida
-                </button>
-
-                <h3 style="margin-top:25px;">
-                    Historial 1–75
-                </h3>
-
-                <div
-                    id="historyGrid"
-                    class="history-grid"
-                ></div>
-
-                <div
-                    id="gameStatus"
-                    class="status"
-                >
-                    Partida lista
-                </div>
-
-            </div>
-
-
-            <!-- CARTÓN -->
-
-            <div class="panel">
-
-                <h2 style="text-align:center;">
-                    🎟️ Tu Cartón
-                </h2>
-
-                <p
-                    style="text-align:center;color:var(--muted);"
-                >
-                    Toca una casilla para marcarla.
-                </p>
-
-                <div class="bingo-card">
-
-                    <div class="bingo-header">
-                        <div>B</div>
-                        <div>I</div>
-                        <div>N</div>
-                        <div>G</div>
-                        <div>O</div>
-                    </div>
-
-                    <div
-                        id="bingoGrid"
-                        class="bingo-grid"
-                    ></div>
-
-                </div>
-
-                <button
-                    class="btn btn-secondary"
-                    onclick="generateNewCard()"
-                >
-                    🎟️ Generar otro cartón
-                </button>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <div class="footer">
-        Gran Bingo Night © 2026
     </div>
+
+</section>
+
+<div class="footer">
+    Gran Bingo Night © 2026
+</div>
 
 </div>
 
 
-<script>
+<script type="module">
 
-/* =====================================================
-   ESTADO PRINCIPAL
-===================================================== */
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
-let pool = [];
-let drawnNumbers = new Set();
+import {
+    getFirestore,
+    doc,
+    setDoc,
+    getDoc,
+    updateDoc,
+    onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyBtHi7xTWysqmKvj1XDpRKN9_fKtvw7INs",
+
+    authDomain:
+        "gran-bingo-night-4596e.firebaseapp.com",
+
+    projectId:
+        "gran-bingo-night-4596e",
+
+    storageBucket:
+        "gran-bingo-night-4596e.firebasestorage.app",
+
+    messagingSenderId:
+        "393363783030",
+
+    appId:
+        "1:393363783030:web:709016c2d7a7e2d1b80e57"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 let currentRoom = "";
+let currentPlayerId = "";
+let currentPlayerName = "";
 let isHost = false;
-
-let players = [];
-
+let roomUnsubscribe = null;
 let currentCard = [];
+let markedCells = new Set();
 
 
-/* =====================================================
-   NAVEGACIÓN
-===================================================== */
+function generatePlayerId() {
+
+    return "player_" +
+        Date.now() +
+        "_" +
+        Math.random()
+            .toString(36)
+            .substring(2,9);
+}
+
+
+currentPlayerId =
+    localStorage.getItem("granBingoPlayerId");
+
+
+if (!currentPlayerId) {
+
+    currentPlayerId =
+        generatePlayerId();
+
+    localStorage.setItem(
+        "granBingoPlayerId",
+        currentPlayerId
+    );
+}
+
 
 function showScreen(id) {
 
-    document.querySelectorAll(".screen").forEach(screen => {
-        screen.classList.remove("active");
-    });
+    document
+        .querySelectorAll(".screen")
+        .forEach(screen =>
+            screen.classList.remove("active")
+        );
 
-    document.getElementById(id).classList.add("active");
+    const screen =
+        document.getElementById(id);
+
+    if (screen) {
+        screen.classList.add("active");
+    }
 }
 
 
@@ -777,241 +816,714 @@ function showJoinScreen() {
 }
 
 
-/* =====================================================
-   CREAR PARTIDA
-===================================================== */
-
-function createGame() {
-
-    const name =
-        document.getElementById("hostName").value.trim();
-
-    if (!name) {
-        alert("Escribe tu nombre primero.");
-        return;
-    }
-
-    currentRoom = generateRoomCode();
-
-    isHost = true;
-
-    players = [
-        {
-            name: name,
-            host: true
-        }
-    ];
-
-    document.getElementById("roomCode").innerText =
-        currentRoom;
-
-    updatePlayers();
-
-    showScreen("roomScreen");
-}
-
-
-/* =====================================================
-   UNIRSE A PARTIDA
-===================================================== */
-
-function joinGame() {
-
-    const name =
-        document.getElementById("playerName").value.trim();
-
-    const room =
-        document.getElementById("roomInput").value
-        .trim()
-        .toUpperCase();
-
-    if (!name) {
-        alert("Escribe tu nombre.");
-        return;
-    }
-
-    if (!room) {
-        alert("Escribe el código de sala.");
-        return;
-    }
-
-    currentRoom = room;
-
-    isHost = false;
-
-    players = [
-        {
-            name: name,
-            host: false
-        }
-    ];
-
-    document.getElementById("roomCode").innerText =
-        currentRoom;
-
-    updatePlayers();
-
-    showScreen("roomScreen");
-
-    document.getElementById("hostControls")
-        .classList.add("hidden");
-}
-
-
-/* =====================================================
-   CÓDIGO DE SALA
-===================================================== */
-
 function generateRoomCode() {
-
-    const letters = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 
     let code = "GB";
 
     for (let i = 0; i < 4; i++) {
-        code += Math.floor(Math.random() * 10);
+
+        code +=
+            Math.floor(Math.random() * 10);
+
     }
 
     return code;
 }
 
 
-/* =====================================================
-   JUGADORES
-===================================================== */
+ {function generateCard() {
 
-function updatePlayers() {
+    const ranges = [
+        [1,15],
+        [16,30],
+        [31,45],
+        [46,60],
+        [61,75]
+    ];
 
-    const list =
-        document.getElementById("playersList");
+    const columns = [];
 
-    list.innerHTML = "";
+    for (let column = 0; column < 5; column++) {
 
-    players.forEach(player => {
+        const numbers = [];
 
-        const item =
-            document.createElement("div");
+        while (numbers.length < 5) {
 
-        item.className = "player";
+            const number =
+                Math.floor(
+                    Math.random() *
+                    (
+                        ranges[column][1] -
+                        ranges[column][0] +
+                        1
+                    )
+                ) +
+                ranges[column][0];
 
-        item.innerHTML = `
-            <span>👤 ${escapeHtml(player.name)}</span>
-            ${
-                player.host
-                ? '<span class="host-badge">ANFITRIÓN</span>'
-                : ''
+            if (!numbers.includes(number)) {
+                numbers.push(number);
             }
-        `;
+        }
 
-        list.appendChild(item);
-
-    });
-
-    document.getElementById("playerCount").innerText =
-        players.length;
-}
-
-
-/* =====================================================
-   COMENZAR PARTIDA
-===================================================== */
-
-function startGame() {
-
-    if (!isHost) {
-        alert("Solo el anfitrión puede comenzar la partida.");
-        return;
+        columns.push(numbers);
     }
 
-    initGame();
+    const card = [];
 
-    document.getElementById("gameRoomCode").innerText =
-        currentRoom;
+    for (let row = 0; row < 5; row++) {
 
-    showScreen("gameScreen");
+        for (let column = 0; column < 5; column++) {
+
+            if (row === 2 && column === 2) {
+                card.push("LIBRE");
+            } else {
+                card.push(columns[column][row]);
+            }
+
+        }
+    }
+
+    return card;
 }
 
 
-/* =====================================================
-   INICIALIZAR JUEGO
-===================================================== */
+function renderCard() {
 
-function initGame() {
+    const grid =
+        document.getElementById("bingoGrid");
 
-    pool = Array.from(
-        { length: 75 },
-        (_, index) => index + 1
-    );
+    if (!grid) return;
 
-    drawnNumbers.clear();
+    grid.innerHTML = "";
 
-    document.getElementById("currentBall")
-        .innerText = "—";
+    currentCard.forEach((number,index) => {
+
+        const cell =
+            document.createElement("div");
+
+        cell.className = "bingo-cell";
+
+        if (number === "LIBRE") {
+
+            cell.classList.add("free");
+            cell.innerText = "LIBRE";
+            markedCells.add(index);
+
+        } else {
+
+            cell.innerText = number;
+
+        }
+
+        if (markedCells.has(index)) {
+            cell.classList.add("marked");
+        }
+
+        cell.addEventListener("click",() => {
+
+            if (number === "LIBRE") return;
+
+            if (markedCells.has(index)) {
+                markedCells.delete(index);
+            } else {
+                markedCells.add(index);
+            }
+
+            renderCard();
+
+        });
+
+        grid.appendChild(cell);
+
+    });
+}
+
+
+async function createGame() {
+
+    const input =
+        document.getElementById("hostName");
+
+    const name =
+        input.value.trim();
+
+    if (!name) {
+
+        alert("Escribe tu nombre primero.");
+        return;
+
+    }
+
+    currentPlayerName = name;
+    currentRoom = generateRoomCode();
+    isHost = true;
+    currentCard = generateCard();
+    markedCells = new Set();
+
+    const roomRef =
+        doc(db,"rooms",currentRoom);
+
+    try {
+
+        await setDoc(roomRef, {
+
+            codigo: currentRoom,
+
+            estado: "esperando",
+
+            numeroActual: null,
+
+            historial: [],
+
+            jugadores: {
+
+                [currentPlayerId]: {
+
+                    id: currentPlayerId,
+
+                    nombre: name,
+
+                    anfitrion: true,
+
+                    carton: currentCard
+
+                }
+
+            }
+
+        });
+
+        document
+            .getElementById("roomCode")
+            .innerText = currentRoom;
+
+        document
+            .getElementById("hostControls")
+            .classList.remove("hidden");
+
+        escucharSala();
+
+        showScreen("roomScreen");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo crear la sala:\n\n" +
+            error.message
+        );
+
+    }
+}
+
+
+async function joinGame() {
+
+    const nameInput =
+        document.getElementById("playerName");
+
+    const roomInput =
+        document.getElementById("roomInput");
+
+    const name =
+        nameInput.value.trim();
+
+    const room =
+        roomInput.value.trim().toUpperCase();
+
+    if (!name) {
+
+        alert("Escribe tu nombre.");
+        return;
+
+    }
+
+    if (!room) {
+
+        alert("Escribe el código de la sala.");
+        return;
+
+    }
+
+    try {
+
+        const roomRef =
+            doc(db,"rooms",room);
+
+        const snapshot =
+            await getDoc(roomRef);
+
+        if (!snapshot.exists()) {
+
+            alert("❌ Esa sala no existe.");
+            return;
+
+        }
+
+        const data = snapshot.data();
+
+        if (data.estado !== "esperando") {
+
+            alert("❌ La partida ya comenzó.");
+            return;
+
+        }
+
+        currentPlayerName = name;
+        currentRoom = room;
+        isHost = false;
+        currentCard = generateCard();
+        markedCells = new Set();
+
+        await updateDoc(roomRef, {
+
+            [`jugadores.${currentPlayerId}`]: {
+
+                id: currentPlayerId,
+
+                nombre: name,
+
+                anfitrion: false,
+
+                carton: currentCard
+
+            }
+
+        });
+
+        document
+            .getElementById("roomCode")
+            .innerText = currentRoom;
+
+        document
+            .getElementById("hostControls")
+            .classList.add("hidden");
+
+        escucharSala();
+
+        showScreen("roomScreen");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo entrar a la sala:\n\n" +
+            error.message
+        );
+
+    }
+}
+
+
+function escucharSala() {
+
+    if (!currentRoom) return;
+
+    if (roomUnsubscribe) {
+        roomUnsubscribe();
+    }
+
+    const roomRef =
+        doc(db,"rooms",currentRoom);
+
+    roomUnsubscribe =
+        onSnapshot(
+            roomRef,
+            snapshot => {
+
+                if (!snapshot.exists()) return;
+
+                actualizarSala(snapshot.data());
+
+            },
+            error => {
+
+                console.error(
+                    "Error de Firestore:",
+                    error
+                );
+
+            }
+        );
+}
+
+
+function actualizarSala(data) {
+
+    const jugadores =
+        Object.values(data.jugadores || {});
+
+    const count =
+        document.getElementById("playerCount");
+
+    if (count) {
+        count.innerText = jugadores.length;
+    }
+
+    const lista =
+        document.getElementById("playersList");
+
+    if (lista) {
+
+        lista.innerHTML = "";
+
+        jugadores.forEach(jugador => {
+
+            const item =
+                document.createElement("div");
+
+            item.className = "player";
+
+            item.innerHTML = `
+                <span>
+                    👤 ${escapeHtml(jugador.nombre)}
+                </span>
+                ${
+                    jugador.anfitrion
+                    ? `<span class="host-badge">ANFITRIÓN</span>`
+                    : ""
+                }
+            `;
+
+            lista.appendChild(item);
+
+        });
+    }
+
+    const yo =
+        data.jugadores &&
+        data.jugadores[currentPlayerId];
+
+    if (yo && Array.isArray(yo.carton)) {
+
+        currentCard = yo.carton;
+
+        renderCard();
+
+    }
+
+    if (data.estado === "jugando") {
+
+        document
+            .getElementById("gameRoomCode")
+            .innerText = currentRoom;
+
+        showScreen("gameScreen");
+
+    }
+
+    const currentBall =
+        document.getElementById("currentBall");
+
+    if (currentBall) {
+
+        currentBall.innerText =
+            data.numeroActual || "—";
+
+    }
+
+    renderHistory(data.historial || []);
+
+    const drawButton =
+        document.getElementById("drawButton");
+
+    const resetButton =
+        document.getElementById("resetButton");
+
+    if (isHost) {
+
+        drawButton.classList.remove("hidden");
+        resetButton.classList.remove("hidden");
+
+    } else {
+
+        drawButton.classList.add("hidden");
+        resetButton.classList.add("hidden");
+
+    }
+}
+
+
+async function startGame() {
+
+    if (!isHost) {
+
+        alert(
+            "Solo el anfitrión puede comenzar."
+        );
+
+        return;
+
+    }
+
+    try {
+
+        const roomRef =
+            doc(db,"rooms",currentRoom);
+
+        await updateDoc(roomRef, {
+
+            estado: "jugando",
+
+            numeroActual: null,
+
+            historial: []
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo comenzar la partida."
+        );
+
+    }
+}
+
+
+async function drawNumber() {
+
+    if (!isHost) return;
+
+    try {
+
+        const roomRef =
+            doc(db,"rooms",currentRoom);
+
+        const snapshot =
+            await getDoc(roomRef);
+
+        if (!snapshot.exists()) return;
+
+        const data = snapshot.data();
+
+        const historial =
+            Array.isArray(data.historial)
+            ? data.historial
+            : [];
+
+        if (historial.length >= 75) {
+
+            alert(
+                "Ya salieron los 75 números."
+            );
+
+            return;
+        }
+
+        let numero;
+
+        do {
+
+            numero =
+                Math.floor(
+                    Math.random() * 75
+                ) + 1;
+
+        } while (historial.includes(numero));
+
+        await updateDoc(roomRef, {
+
+            numeroActual: numero,
+
+            historial: [
+                ...historial,
+                numero
+            ]
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo sacar el número."
+        );
+
+    }
+}
+
+
+function createHistoryGrid() {
+
+    const grid =
+        document.getElementById("historyGrid");
+
+    if (!grid) return;
+
+    grid.innerHTML = "";
+
+    for (let number = 1; number <= 75; number++) {
+
+        const ball =
+            document.createElement("div");
+
+        ball.className = "history-ball";
+
+        ball.id = "history-" + number;
+
+        ball.innerText = number;
+
+        grid.appendChild(ball);
+
+    }
+}
+
+
+function renderHistory(historial) {
 
     createHistoryGrid();
 
-    generateNewCard();
+    historial.forEach(number => {
 
-    document.getElementById("gameStatus")
-        .innerText = "Part
+        const ball =
+            document.getElementById(
+                "history-" + number
+            );
 
+        if (ball) {
+            ball.classList.add("drawn");
+        }
 
+    });
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    const status =
+        document.getElementById("gameStatus");
 
-// Configuración de tu proyecto 'gran-bingo-night'
-const firebaseConfig = {
-  databaseURL: "https://gran-bingo-night-default-rtdb.firebaseio.com"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+    if (status) {
 
-// 1. Crear Sala (Administrador)
-export async function crearSala() {
-  const codigo = Math.random().toString(36).substring(2, 7).toUpperCase(); // Código de 5 letras
-  await set(ref(db, `rooms/${codigo}`), {
-    estado: "esperando",
-    numeroActual: 0,
-    historial: [0], // Historial inicializado
-    jugadores: {}
-  });
-  return codigo; 
-}
+        status.innerText =
+            historial.length +
+            " de 75 números salidos";
 
-// 2. Unirse a la Sala (Jugadores)
-export async function unirseASala(codigo, nombre, jugadorId) {
-  await set(ref(db, `rooms/${codigo}/jugadores/${jugadorId}`), { nombre });
-}
-
-// 3. Iniciar el Bingo
-export async function iniciarJuego(codigo) {
-  await update(ref(db, `rooms/${codigo}`), { estado: "jugando" });
-}
-
-// 4. Escuchar cambios en tiempo real (Para todos los teléfonos)
-export function escucharSala(codigo, callback) {
-  onValue(ref(db, `rooms/${codigo}`), (snapshot) => {
-    if (snapshot.exists()) {
-      callback(snapshot.val()); // Retorna estado, numeroActual e historial
     }
-  });
 }
 
-// 5. Bombo Digital del 1 al 75 sin repetir (Administrador)
-export async function siguienteNumero(codigo, historialActual) {
-  const disponibles = Array.from({ length: 75 }, (_, i) => i + 1)
-    .filter(n => !historialActual.includes(n));
 
-  if (disponibles.length === 0) return null; // Fin del juego
+async function resetGame() {
 
-  const nuevoNumero = disponibles[Math.floor(Math.random() * disponibles.length)];
-  const nuevoHistorial = [...historialActual, nuevoNumero];
+    if (!isHost) return;
 
-  await update(ref(db, `rooms/${codigo}`), {
-    numeroActual: nuevoNumero,
-    historial: nuevoHistorial
-  });
-  return nuevoNumero;
+    if (
+        !confirm(
+            "¿Seguro que quieres reiniciar la partida?"
+        )
+    ) {
+        return;
+    }
+
+    try {
+
+        const roomRef =
+            doc(db,"rooms",currentRoom);
+
+        await updateDoc(roomRef, {
+
+            estado: "jugando",
+
+            numeroActual: null,
+
+            historial: []
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo reiniciar."
+        );
+
+    }
 }
 
+
+async function generateNewCard() {
+
+    if (!currentRoom) {
+
+        alert(
+            "Primero debes entrar a una sala."
+        );
+
+        return;
+    }
+
+    currentCard = generateCard();
+    markedCells = new Set();
+
+    renderCard();
+
+    try {
+
+        const roomRef =
+            doc(db,"rooms",currentRoom);
+
+        await updateDoc(roomRef, {
+
+            [`jugadores.${currentPlayerId}.carton`]:
+                currentCard
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "No se pudo guardar el cartón."
+        );
+
+    }
+}
+
+
+function leaveRoom() {
+
+    if (roomUnsubscribe) {
+
+        roomUnsubscribe();
+        roomUnsubscribe = null;
+
+    }
+
+    currentRoom = "";
+    isHost = false;
+    currentCard = [];
+    markedCells = new Set();
+
+    showHome();
+}
+
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+
+window.showHome = showHome;
+window.showCreateScreen = showCreateScreen;
+window.showJoinScreen = showJoinScreen;
+window.createGame = createGame;
+window.joinGame = joinGame;
+window.startGame = startGame;
+window.drawNumber = drawNumber;
+window.resetGame = resetGame;
+window.generateNewCard = generateNewCard;
+window.leaveRoom = leaveRoom;
+
+createHistoryGrid();
+
+</script>
