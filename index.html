@@ -382,7 +382,8 @@ input:focus {
     color:var(--green);
     font-weight:700;
 }
-    .hidden {
+
+.hidden {
     display:none !important;
 }
 
@@ -709,8 +710,7 @@ input:focus {
 
 import {
     initializeApp
-}
-from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
 
 import {
     getFirestore,
@@ -718,32 +718,18 @@ import {
     setDoc,
     getDoc,
     updateDoc,
-    onSnapshot
-}
-from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
-
+    onSnapshot,
+    deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyBtHi7xTWysqmKvj1XDpRKN9_fKtvw7INs",
-
-    authDomain:
-        "gran-bingo-night-4596e.firebaseapp.com",
-
-    projectId:
-        "gran-bingo-night-4596e",
-
-    storageBucket:
-        "gran-bingo-night-4596e.firebasestorage.app",
-
-    messagingSenderId:
-        "393363783030",
-
-    appId:
-        "1:393363783030:web:709016c2d7a7e2d1b80e57"
+    apiKey: "AIzaSyBtHi7xTWysqmKvj1XDpRKN9_fKtvw7INs",
+    authDomain: "gran-bingo-night-4596e.firebaseapp.com",
+    projectId: "gran-bingo-night-4596e",
+    storageBucket: "gran-bingo-night-4596e.firebasestorage.app",
+    messagingSenderId: "393363783030",
+    appId: "1:393363783030:web:709016c2d7a7e2d1b80e57"
 };
-
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -756,109 +742,61 @@ let roomUnsubscribe = null;
 let currentCard = [];
 let markedCells = new Set();
 
-
 function generatePlayerId() {
-
-    return "player_" +
-        Date.now() +
-        "_" +
-        Math.random()
-            .toString(36)
-            .substring(2,9);
+    return "player_" + Date.now() + "_" + Math.random().toString(36).substring(2, 9);
 }
 
-
-currentPlayerId =
-    localStorage.getItem("granBingoPlayerId");
-
+currentPlayerId = localStorage.getItem("granBingoPlayerId");
 
 if (!currentPlayerId) {
-
-    currentPlayerId =
-        generatePlayerId();
-
-    localStorage.setItem(
-        "granBingoPlayerId",
-        currentPlayerId
-    );
+    currentPlayerId = generatePlayerId();
+    localStorage.setItem("granBingoPlayerId", currentPlayerId);
 }
 
-
 function showScreen(id) {
-
-    document
-        .querySelectorAll(".screen")
-        .forEach(screen =>
-            screen.classList.remove("active")
-        );
-
-    const screen =
-        document.getElementById(id);
-
+    document.querySelectorAll(".screen").forEach(screen => screen.classList.remove("active"));
+    const screen = document.getElementById(id);
     if (screen) {
         screen.classList.add("active");
     }
 }
 
-
 function showHome() {
     showScreen("homeScreen");
 }
-
 
 function showCreateScreen() {
     showScreen("createScreen");
 }
 
-
 function showJoinScreen() {
     showScreen("joinScreen");
 }
 
-
 function generateRoomCode() {
-
     let code = "GB";
-
     for (let i = 0; i < 4; i++) {
-
-        code +=
-            Math.floor(Math.random() * 10);
-
+        code += Math.floor(Math.random() * 10);
     }
-
     return code;
 }
 
-
- {function generateCard() {
-
+function generateCard() {
     const ranges = [
-        [1,15],
-        [16,30],
-        [31,45],
-        [46,60],
-        [61,75]
+        [1, 15],
+        [16, 30],
+        [31, 45],
+        [46, 60],
+        [61, 75]
     ];
 
     const columns = [];
 
     for (let column = 0; column < 5; column++) {
-
         const numbers = [];
 
         while (numbers.length < 5) {
-
-            const number =
-                Math.floor(
-                    Math.random() *
-                    (
-                        ranges[column][1] -
-                        ranges[column][0] +
-                        1
-                    )
-                ) +
-                ranges[column][0];
+            const number = Math.floor(Math.random() * (ranges[column][1] - ranges[column][0] + 1)) + ranges[column][0];
 
             if (!numbers.includes(number)) {
                 numbers.push(number);
@@ -871,56 +809,138 @@ function generateRoomCode() {
     const card = [];
 
     for (let row = 0; row < 5; row++) {
-
         for (let column = 0; column < 5; column++) {
-
             if (row === 2 && column === 2) {
                 card.push("LIBRE");
             } else {
                 card.push(columns[column][row]);
             }
-
         }
     }
 
     return card;
 }
 
+function renderPlayersList(players) {
+    const playersList = document.getElementById("playersList");
+    if (!playersList) return;
+
+    playersList.innerHTML = "";
+
+    const entries = Object.values(players || {});
+    entries.forEach(player => {
+        const playerRow = document.createElement("div");
+        playerRow.className = "player";
+
+        const name = document.createElement("strong");
+        name.textContent = player.nombre || "Jugador";
+
+        const badge = document.createElement("span");
+        badge.className = "host-badge";
+        badge.textContent = player.anfitrion ? "HOST" : "JUGADOR";
+
+        playerRow.appendChild(name);
+        playerRow.appendChild(badge);
+        playersList.appendChild(playerRow);
+    });
+}
+
+function renderHistoryGrid(historial = []) {
+    const historyGrid = document.getElementById("historyGrid");
+    if (!historyGrid) return;
+
+    historyGrid.innerHTML = "";
+
+    for (let i = 1; i <= 75; i++) {
+        const ball = document.createElement("div");
+        ball.className = "history-ball";
+
+        if (historial.includes(i)) {
+            ball.classList.add("drawn");
+            ball.textContent = i;
+        } else {
+            ball.textContent = "";
+        }
+
+        historyGrid.appendChild(ball);
+    }
+}
+
+function updateHostControls() {
+    const hostControls = document.getElementById("hostControls");
+    if (hostControls) {
+        hostControls.style.display = isHost ? "block" : "none";
+    }
+
+    const drawButton = document.getElementById("drawButton");
+    if (drawButton) {
+        drawButton.disabled = !isHost;
+        drawButton.style.opacity = isHost ? "1" : "0.6";
+        drawButton.style.cursor = isHost ? "pointer" : "not-allowed";
+    }
+
+    const resetButton = document.getElementById("resetButton");
+    if (resetButton) {
+        resetButton.style.display = isHost ? "block" : "none";
+    }
+}
+
+function renderGameState(roomData) {
+    const ball = document.getElementById("currentBall");
+    if (ball) {
+        ball.textContent = roomData.numeroActual ?? "—";
+    }
+
+    const status = document.getElementById("gameStatus");
+    if (status) {
+        if (roomData.estado === "esperando") {
+            status.textContent = "Partida lista";
+        } else if (roomData.numeroActual !== null && roomData.numeroActual !== undefined) {
+            status.textContent = `Último número: ${roomData.numeroActual}`;
+        } else {
+            status.textContent = "Partida en curso";
+        }
+    }
+
+    document.getElementById("playerCount").textContent = Object.keys(roomData.jugadores || {}).length;
+    renderHistoryGrid(roomData.historial || []);
+    updateHostControls();
+}
+
+function renderRoomState(roomData) {
+    const roomCodeEl = document.getElementById("roomCode");
+    if (roomCodeEl) roomCodeEl.textContent = currentRoom;
+
+    const gameRoomCodeEl = document.getElementById("gameRoomCode");
+    if (gameRoomCodeEl) gameRoomCodeEl.textContent = currentRoom;
+
+    renderPlayersList(roomData.jugadores || {});
+    document.getElementById("playerCount").textContent = Object.keys(roomData.jugadores || {}).length;
+}
 
 function renderCard() {
-
-    const grid =
-        document.getElementById("bingoGrid");
-
+    const grid = document.getElementById("bingoGrid");
     if (!grid) return;
 
     grid.innerHTML = "";
 
-    currentCard.forEach((number,index) => {
-
-        const cell =
-            document.createElement("div");
-
+    currentCard.forEach((number, index) => {
+        const cell = document.createElement("div");
         cell.className = "bingo-cell";
 
         if (number === "LIBRE") {
-
             cell.classList.add("free");
             cell.innerText = "LIBRE";
             markedCells.add(index);
-
         } else {
-
             cell.innerText = number;
-
         }
 
         if (markedCells.has(index)) {
             cell.classList.add("marked");
         }
 
-        cell.addEventListener("click",() => {
-
+        cell.addEventListener("click", async () => {
             if (number === "LIBRE") return;
 
             if (markedCells.has(index)) {
@@ -930,28 +950,45 @@ function renderCard() {
             }
 
             renderCard();
-
+            await savePlayerCard();
         });
 
         grid.appendChild(cell);
-
     });
 }
 
+async function savePlayerCard() {
+    if (!currentRoom) return;
+
+    const roomRef = doc(db, "rooms", currentRoom);
+    const roomSnap = await getDoc(roomRef);
+
+    if (!roomSnap.exists()) return;
+
+    const roomData = roomSnap.data();
+    const players = roomData.jugadores || {};
+
+    if (!players[currentPlayerId]) {
+        players[currentPlayerId] = {
+            id: currentPlayerId,
+            nombre: currentPlayerName,
+            anfitrion: isHost,
+            carton: currentCard
+        };
+    } else {
+        players[currentPlayerId].carton = currentCard;
+    }
+
+    await updateDoc(roomRef, { jugadores: players });
+}
 
 async function createGame() {
-
-    const input =
-        document.getElementById("hostName");
-
-    const name =
-        input.value.trim();
+    const input = document.getElementById("hostName");
+    const name = input.value.trim();
 
     if (!name) {
-
         alert("Escribe tu nombre primero.");
         return;
-
     }
 
     currentPlayerName = name;
@@ -960,558 +997,236 @@ async function createGame() {
     currentCard = generateCard();
     markedCells = new Set();
 
-    const roomRef =
-        doc(db,"rooms",currentRoom);
+    const roomRef = doc(db, "rooms", currentRoom);
 
     try {
-
         await setDoc(roomRef, {
-
             codigo: currentRoom,
-
             estado: "esperando",
-
             numeroActual: null,
-
             historial: [],
-
             jugadores: {
-
                 [currentPlayerId]: {
-
                     id: currentPlayerId,
-
                     nombre: name,
-
                     anfitrion: true,
-
                     carton: currentCard
-
                 }
-
             }
-
         });
 
-        document
-            .getElementById("roomCode")
-            .innerText = currentRoom;
-
-        document
-            .getElementById("hostControls")
-            .classList.remove("hidden");
-
-        escucharSala();
+        renderRoomState({ jugadores: { [currentPlayerId]: { id: currentPlayerId, nombre: name, anfitrion: true, carton: currentCard } } });
+        renderGameState({ estado: "esperando", numeroActual: null, historial: [], jugadores: { [currentPlayerId]: { id: currentPlayerId, nombre: name, anfitrion: true, carton: currentCard } } });
 
         showScreen("roomScreen");
-
+        attachRoomListener(currentRoom);
+        renderCard();
     } catch (error) {
-
         console.error(error);
-
-        alert(
-            "No se pudo crear la sala:\n\n" +
-            error.message
-        );
-
+        alert("No se pudo crear la sala.");
     }
 }
-
 
 async function joinGame() {
+    const playerInput = document.getElementById("playerName");
+    const roomInput = document.getElementById("roomInput");
 
-    const nameInput =
-        document.getElementById("playerName");
-
-    const roomInput =
-        document.getElementById("roomInput");
-
-    const name =
-        nameInput.value.trim();
-
-    const room =
-        roomInput.value.trim().toUpperCase();
+    const name = playerInput.value.trim();
+    const roomCode = roomInput.value.trim().toUpperCase();
 
     if (!name) {
-
-        alert("Escribe tu nombre.");
-        return;
-
-    }
-
-    if (!room) {
-
-        alert("Escribe el código de la sala.");
-        return;
-
-    }
-
-    try {
-
-        const roomRef =
-            doc(db,"rooms",room);
-
-        const snapshot =
-            await getDoc(roomRef);
-
-        if (!snapshot.exists()) {
-
-            alert("❌ Esa sala no existe.");
-            return;
-
-        }
-
-        const data = snapshot.data();
-
-        if (data.estado !== "esperando") {
-
-            alert("❌ La partida ya comenzó.");
-            return;
-
-        }
-
-        currentPlayerName = name;
-        currentRoom = room;
-        isHost = false;
-        currentCard = generateCard();
-        markedCells = new Set();
-
-        await updateDoc(roomRef, {
-
-            [`jugadores.${currentPlayerId}`]: {
-
-                id: currentPlayerId,
-
-                nombre: name,
-
-                anfitrion: false,
-
-                carton: currentCard
-
-            }
-
-        });
-
-        document
-            .getElementById("roomCode")
-            .innerText = currentRoom;
-
-        document
-            .getElementById("hostControls")
-            .classList.add("hidden");
-
-        escucharSala();
-
-        showScreen("roomScreen");
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "No se pudo entrar a la sala:\n\n" +
-            error.message
-        );
-
-    }
-}
-
-
-function escucharSala() {
-
-    if (!currentRoom) return;
-
-    if (roomUnsubscribe) {
-        roomUnsubscribe();
-    }
-
-    const roomRef =
-        doc(db,"rooms",currentRoom);
-
-    roomUnsubscribe =
-        onSnapshot(
-            roomRef,
-            snapshot => {
-
-                if (!snapshot.exists()) return;
-
-                actualizarSala(snapshot.data());
-
-            },
-            error => {
-
-                console.error(
-                    "Error de Firestore:",
-                    error
-                );
-
-            }
-        );
-}
-
-
-function actualizarSala(data) {
-
-    const jugadores =
-        Object.values(data.jugadores || {});
-
-    const count =
-        document.getElementById("playerCount");
-
-    if (count) {
-        count.innerText = jugadores.length;
-    }
-
-    const lista =
-        document.getElementById("playersList");
-
-    if (lista) {
-
-        lista.innerHTML = "";
-
-        jugadores.forEach(jugador => {
-
-            const item =
-                document.createElement("div");
-
-            item.className = "player";
-
-            item.innerHTML = `
-                <span>
-                    👤 ${escapeHtml(jugador.nombre)}
-                </span>
-                ${
-                    jugador.anfitrion
-                    ? `<span class="host-badge">ANFITRIÓN</span>`
-                    : ""
-                }
-            `;
-
-            lista.appendChild(item);
-
-        });
-    }
-
-    const yo =
-        data.jugadores &&
-        data.jugadores[currentPlayerId];
-
-    if (yo && Array.isArray(yo.carton)) {
-
-        currentCard = yo.carton;
-
-        renderCard();
-
-    }
-
-    if (data.estado === "jugando") {
-
-        document
-            .getElementById("gameRoomCode")
-            .innerText = currentRoom;
-
-        showScreen("gameScreen");
-
-    }
-
-    const currentBall =
-        document.getElementById("currentBall");
-
-    if (currentBall) {
-
-        currentBall.innerText =
-            data.numeroActual || "—";
-
-    }
-
-    renderHistory(data.historial || []);
-
-    const drawButton =
-        document.getElementById("drawButton");
-
-    const resetButton =
-        document.getElementById("resetButton");
-
-    if (isHost) {
-
-        drawButton.classList.remove("hidden");
-        resetButton.classList.remove("hidden");
-
-    } else {
-
-        drawButton.classList.add("hidden");
-        resetButton.classList.add("hidden");
-
-    }
-}
-
-
-async function startGame() {
-
-    if (!isHost) {
-
-        alert(
-            "Solo el anfitrión puede comenzar."
-        );
-
-        return;
-
-    }
-
-    try {
-
-        const roomRef =
-            doc(db,"rooms",currentRoom);
-
-        await updateDoc(roomRef, {
-
-            estado: "jugando",
-
-            numeroActual: null,
-
-            historial: []
-
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "No se pudo comenzar la partida."
-        );
-
-    }
-}
-
-
-async function drawNumber() {
-
-    if (!isHost) return;
-
-    try {
-
-        const roomRef =
-            doc(db,"rooms",currentRoom);
-
-        const snapshot =
-            await getDoc(roomRef);
-
-        if (!snapshot.exists()) return;
-
-        const data = snapshot.data();
-
-        const historial =
-            Array.isArray(data.historial)
-            ? data.historial
-            : [];
-
-        if (historial.length >= 75) {
-
-            alert(
-                "Ya salieron los 75 números."
-            );
-
-            return;
-        }
-
-        let numero;
-
-        do {
-
-            numero =
-                Math.floor(
-                    Math.random() * 75
-                ) + 1;
-
-        } while (historial.includes(numero));
-
-        await updateDoc(roomRef, {
-
-            numeroActual: numero,
-
-            historial: [
-                ...historial,
-                numero
-            ]
-
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "No se pudo sacar el número."
-        );
-
-    }
-}
-
-
-function createHistoryGrid() {
-
-    const grid =
-        document.getElementById("historyGrid");
-
-    if (!grid) return;
-
-    grid.innerHTML = "";
-
-    for (let number = 1; number <= 75; number++) {
-
-        const ball =
-            document.createElement("div");
-
-        ball.className = "history-ball";
-
-        ball.id = "history-" + number;
-
-        ball.innerText = number;
-
-        grid.appendChild(ball);
-
-    }
-}
-
-
-function renderHistory(historial) {
-
-    createHistoryGrid();
-
-    historial.forEach(number => {
-
-        const ball =
-            document.getElementById(
-                "history-" + number
-            );
-
-        if (ball) {
-            ball.classList.add("drawn");
-        }
-
-    });
-
-    const status =
-        document.getElementById("gameStatus");
-
-    if (status) {
-
-        status.innerText =
-            historial.length +
-            " de 75 números salidos";
-
-    }
-}
-
-
-async function resetGame() {
-
-    if (!isHost) return;
-
-    if (
-        !confirm(
-            "¿Seguro que quieres reiniciar la partida?"
-        )
-    ) {
+        alert("Escribe tu nombre primero.");
         return;
     }
 
-    try {
-
-        const roomRef =
-            doc(db,"rooms",currentRoom);
-
-        await updateDoc(roomRef, {
-
-            estado: "jugando",
-
-            numeroActual: null,
-
-            historial: []
-
-        });
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "No se pudo reiniciar."
-        );
-
-    }
-}
-
-
-async function generateNewCard() {
-
-    if (!currentRoom) {
-
-        alert(
-            "Primero debes entrar a una sala."
-        );
-
+    if (!roomCode || roomCode.length !== 6) {
+        alert("Introduce un código de sala válido.");
         return;
     }
 
+    currentPlayerName = name;
+    currentRoom = roomCode;
+    isHost = false;
     currentCard = generateCard();
     markedCells = new Set();
 
-    renderCard();
-
     try {
+        const roomRef = doc(db, "rooms", currentRoom);
+        const roomSnap = await getDoc(roomRef);
 
-        const roomRef =
-            doc(db,"rooms",currentRoom);
+        if (!roomSnap.exists()) {
+            alert("La sala no existe o ya no está disponible.");
+            return;
+        }
 
-        await updateDoc(roomRef, {
+        const roomData = roomSnap.data();
+        const players = roomData.jugadores || {};
 
-            [`jugadores.${currentPlayerId}.carton`]:
-                currentCard
+        players[currentPlayerId] = {
+            id: currentPlayerId,
+            nombre: currentPlayerName,
+            anfitrion: false,
+            carton: currentCard
+        };
 
-        });
+        await updateDoc(roomRef, { jugadores: players });
 
+        renderRoomState({ jugadores: players });
+        renderGameState({ estado: roomData.estado || "esperando", numeroActual: roomData.numeroActual ?? null, historial: roomData.historial || [], jugadores: players });
+
+        attachRoomListener(currentRoom);
+        showScreen("roomScreen");
+        renderCard();
     } catch (error) {
-
         console.error(error);
-
-        alert(
-            "No se pudo guardar el cartón."
-        );
-
+        alert("No se pudo entrar a la sala.");
     }
 }
 
+function attachRoomListener(roomCode) {
+    if (roomUnsubscribe) {
+        roomUnsubscribe();
+    }
 
-function leaveRoom() {
+    const roomRef = doc(db, "rooms", roomCode);
+    roomUnsubscribe = onSnapshot(roomRef, (snapshot) => {
+        if (!snapshot.exists()) {
+            showHome();
+            alert("La sala se cerró.");
+            return;
+        }
+
+        const roomData = snapshot.data();
+        renderRoomState(roomData);
+        renderGameState(roomData);
+
+        const playerInRoom = (roomData.jugadores || {})[currentPlayerId];
+        if (playerInRoom && Array.isArray(playerInRoom.carton)) {
+            currentCard = playerInRoom.carton;
+            renderCard();
+        }
+
+        const playerDoc = (roomData.jugadores || {})[currentPlayerId];
+        if (playerDoc) {
+            isHost = Boolean(playerDoc.anfitrion);
+        }
+
+        updateHostControls();
+
+        if (roomData.estado === "en_juego" || (roomData.historial && roomData.historial.length > 0)) {
+            showScreen("gameScreen");
+        }
+    });
+}
+
+async function startGame() {
+    if (!isHost || !currentRoom) return;
+
+    const roomRef = doc(db, "rooms", currentRoom);
+    await updateDoc(roomRef, {
+        estado: "en_juego",
+        numeroActual: null,
+        historial: []
+    });
+
+    showScreen("gameScreen");
+}
+
+async function drawNumber() {
+    if (!isHost || !currentRoom) return;
+
+    const roomRef = doc(db, "rooms", currentRoom);
+    const roomSnap = await getDoc(roomRef);
+
+    if (!roomSnap.exists()) return;
+
+    const roomData = roomSnap.data();
+    const historial = roomData.historial || [];
+    const availableNumbers = [];
+
+    for (let number = 1; number <= 75; number++) {
+        if (!historial.includes(number)) {
+            availableNumbers.push(number);
+        }
+    }
+
+    if (!availableNumbers.length) {
+        alert("Ya están sacados todos los números.");
+        return;
+    }
+
+    const nextNumber = availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+    const nextHistorial = [...historial, nextNumber];
+
+    await updateDoc(roomRef, {
+        numeroActual: nextNumber,
+        historial: nextHistorial,
+        estado: "en_juego"
+    });
+}
+
+async function resetGame() {
+    if (!isHost || !currentRoom) return;
+
+    const roomRef = doc(db, "rooms", currentRoom);
+    await updateDoc(roomRef, {
+        estado: "esperando",
+        numeroActual: null,
+        historial: []
+    });
+
+    showScreen("roomScreen");
+}
+
+async function generateNewCard() {
+    currentCard = generateCard();
+    markedCells = new Set();
+    renderCard();
+    await savePlayerCard();
+}
+
+async function leaveRoom() {
+    if (!currentRoom) {
+        showHome();
+        return;
+    }
+
+    const roomRef = doc(db, "rooms", currentRoom);
+    const roomSnap = await getDoc(roomRef);
+
+    if (roomSnap.exists()) {
+        const roomData = roomSnap.data();
+        const players = roomData.jugadores || {};
+
+        if (players[currentPlayerId]) {
+            delete players[currentPlayerId];
+        }
+
+        if (Object.keys(players).length === 0) {
+            await deleteDoc(roomRef);
+        } else {
+            if (isHost) {
+                const firstPlayerId = Object.keys(players)[0];
+                Object.entries(players).forEach(([playerId, player]) => {
+                    player.anfitrion = playerId === firstPlayerId;
+                });
+            }
+
+            await updateDoc(roomRef, { jugadores: players });
+        }
+    }
 
     if (roomUnsubscribe) {
-
         roomUnsubscribe();
         roomUnsubscribe = null;
-
     }
 
     currentRoom = "";
     isHost = false;
     currentCard = [];
     markedCells = new Set();
-
     showHome();
 }
-
-
-function escapeHtml(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
-
 
 window.showHome = showHome;
 window.showCreateScreen = showCreateScreen;
@@ -1524,8 +1239,10 @@ window.resetGame = resetGame;
 window.generateNewCard = generateNewCard;
 window.leaveRoom = leaveRoom;
 
-createHistoryGrid();
-
+showHome();
+updateHostControls();
+renderCard();
 </script>
+
 </body>
 </html>
